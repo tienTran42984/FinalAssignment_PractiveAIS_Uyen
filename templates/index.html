@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Encryption System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            padding: 40px;
+            max-width: 800px;
+            width: 100%;
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2em;
+        }
+
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .section-title {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #495057;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+
+        .section-title::before {
+            content: '';
+            width: 4px;
+            height: 20px;
+            background: #667eea;
+            margin-right: 10px;
+            border-radius: 2px;
+        }
+
+        /* Files Section */
+        .file-group {
+            margin-bottom: 15px;
+        }
+
+        .file-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #495057;
+            font-weight: 500;
+        }
+
+        .file-input-wrapper {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .file-input-wrapper input[type="text"] {
+            flex: 1;
+            padding: 10px 15px;
+            border: 2px solid #dee2e6;
+            border-radius: 5px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        .file-input-wrapper input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .file-input-wrapper input[type="file"] {
+            display: none;
+        }
+
+        .browse-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: background 0.3s;
+        }
+
+        .browse-btn:hover {
+            background: #5568d3;
+        }
+
+        .browse-btn::before {
+            content: '📁';
+            font-size: 16px;
+        }
+
+        /* Algorithm Section */
+        .algorithm-group {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            padding: 10px 15px;
+            border: 2px solid #dee2e6;
+            border-radius: 5px;
+            transition: all 0.3s;
+            background: white;
+        }
+
+        .radio-option:hover {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+
+        .radio-option input[type="radio"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: #667eea;
+        }
+
+        .radio-option input[type="radio"]:checked + label {
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .radio-option label {
+            cursor: pointer;
+            color: #495057;
+            font-size: 16px;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .action-btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .encrypt-btn {
+            background: #28a745;
+            color: white;
+        }
+
+        .encrypt-btn:hover {
+            background: #218838;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(40, 167, 69, 0.3);
+        }
+
+        .encrypt-btn::before {
+            content: '🔒';
+            font-size: 18px;
+        }
+
+        .decrypt-btn {
+            background: #dc3545;
+            color: white;
+        }
+
+        .decrypt-btn:hover {
+            background: #c82333;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(220, 53, 69, 0.3);
+        }
+
+        .decrypt-btn::before {
+            content: '🔓';
+            font-size: 18px;
+        }
+
+        .key-section {
+            margin-top: 20px;
+            padding: 15px;
+            background: #fff3cd;
+            border-radius: 5px;
+            border-left: 4px solid #ffc107;
+        }
+
+        .key-section a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .key-section a:hover {
+            text-decoration: underline;
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 15px;
+            border-left: 4px solid #dc3545;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 15px;
+            border-left: 4px solid #28a745;
+        }
+
+        /* Popup Modal */
+        .popup-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .popup-overlay.show {
+            display: flex;
+        }
+
+        .popup-content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+        }
+
+        .popup-content.success {
+            border-top: 4px solid #28a745;
+        }
+
+        .popup-content.error {
+            border-top: 4px solid #dc3545;
+        }
+
+        .popup-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .popup-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .popup-message {
+            font-size: 16px;
+            color: #495057;
+            margin-bottom: 20px;
+        }
+
+        .popup-path {
+            font-size: 12px;
+            color: #6c757d;
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            word-break: break-all;
+            margin-bottom: 20px;
+        }
+
+        .popup-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 30px;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .popup-btn:hover {
+            background: #5568d3;
+        }
+
+        .popup-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .download-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 30px;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .download-btn:hover {
+            background: #218838;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔐 DES Encryption System</h1>
+
+        <form id="mainForm" method="post" enctype="multipart/form-data">
+            <!-- Files Section -->
+            <div class="section">
+                <div class="section-title">Files</div>
+                
+                <div class="file-group">
+                    <label for="input_file_path">Input File</label>
+                    <div class="file-input-wrapper">
+                        <input type="text" id="input_file_path" name="input_file_path" 
+                               placeholder="C:\TEMP\Encryption\Encrypt-decrypt.doc" readonly>
+                        <input type="file" id="input_file" name="input_file" accept=".txt,.doc,.docx">
+                        <button type="button" class="browse-btn" onclick="document.getElementById('input_file').click()">Browse</button>
+                    </div>
+                </div>
+
+                <div class="file-group">
+                    <label for="output_file_path">Output Folder</label>
+                    <div class="file-input-wrapper">
+                        <input type="text" id="output_file_path" name="output_file_path" 
+                               placeholder="C:\TEMP\Encryption" required>
+                    </div>
+                    <small style="color: #6c757d; font-size: 12px; margin-top: 5px; display: block;">
+                        Nhập đường dẫn thư mục để lưu file kết quả (tên file sẽ tự động tạo)
+                    </small>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <button type="submit" class="action-btn encrypt-btn" formaction="/encrypt_with_key">Encrypt</button>
+                <button type="submit" class="action-btn decrypt-btn" formaction="/decrypt_with_key">Decrypt</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Popup Modal -->
+    <div class="popup-overlay" id="popupOverlay">
+        <div class="popup-content" id="popupContent">
+            <div class="popup-icon" id="popupIcon">✅</div>
+            <div class="popup-title" id="popupTitle">Thành công!</div>
+            <div class="popup-message" id="popupMessage"></div>
+            <div class="popup-path" id="popupPath" style="display: none;"></div>
+            <div class="popup-buttons" id="popupButtons">
+                <button class="popup-btn" onclick="closePopup()">Đóng</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Update input file path when file is selected
+        document.getElementById('input_file').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                // Hiển thị tên file hoặc đường dẫn đầy đủ nếu có
+                const filePath = file.webkitRelativePath || file.name;
+                document.getElementById('input_file_path').value = filePath;
+            }
+        });
+
+
+        // Handle form submission với AJAX
+        document.getElementById('mainForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const inputFile = document.getElementById('input_file').files[0];
+            if (!inputFile) {
+                showPopup('error', 'Lỗi', 'Vui lòng chọn file input!');
+                return false;
+            }
+            
+            const outputPath = document.getElementById('output_file_path').value;
+            if (!outputPath) {
+                showPopup('error', 'Lỗi', 'Vui lòng nhập đường dẫn thư mục output!');
+                return false;
+            }
+            
+            // Xác định action (encrypt hoặc decrypt)
+            const submitBtn = e.submitter;
+            const formAction = submitBtn.getAttribute('formaction');
+            
+            // Hiển thị loading
+            const buttons = document.querySelectorAll('.action-btn');
+            buttons.forEach(btn => {
+                btn.disabled = true;
+                const originalText = btn.textContent;
+                btn.dataset.originalText = originalText;
+                btn.textContent = 'Đang xử lý...';
+            });
+            
+            // Tạo FormData
+            const formData = new FormData(this);
+            
+            // Gửi request
+            fetch(formAction, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Khôi phục buttons
+                buttons.forEach(btn => {
+                    btn.disabled = false;
+                    btn.textContent = btn.dataset.originalText || btn.textContent;
+                });
+                
+                if (data.success) {
+                    showPopup('success', 'Thành công!', data.message, data.path, data.download_path);
+                } else {
+                    showPopup('error', 'Lỗi', data.error || 'Có lỗi xảy ra!');
+                }
+            })
+            .catch(error => {
+                // Khôi phục buttons
+                buttons.forEach(btn => {
+                    btn.disabled = false;
+                    btn.textContent = btn.dataset.originalText || btn.textContent;
+                });
+                
+                showPopup('error', 'Lỗi', 'Có lỗi xảy ra: ' + error.message);
+            });
+        });
+        
+        // Hiển thị popup
+        function showPopup(type, title, message, path = null, downloadPath = null) {
+            const overlay = document.getElementById('popupOverlay');
+            const content = document.getElementById('popupContent');
+            const icon = document.getElementById('popupIcon');
+            const titleEl = document.getElementById('popupTitle');
+            const messageEl = document.getElementById('popupMessage');
+            const pathEl = document.getElementById('popupPath');
+            const buttonsEl = document.getElementById('popupButtons');
+            
+            // Xóa class cũ
+            content.classList.remove('success', 'error');
+            
+            // Thêm class mới
+            content.classList.add(type);
+            
+            // Cập nhật nội dung
+            if (type === 'success') {
+                icon.textContent = '✅';
+                titleEl.textContent = title;
+            } else {
+                icon.textContent = '❌';
+                titleEl.textContent = title;
+            }
+            
+            messageEl.textContent = message;
+            
+            if (path) {
+                pathEl.textContent = 'Đường dẫn: ' + path;
+                pathEl.style.display = 'block';
+            } else {
+                pathEl.style.display = 'none';
+            }
+            
+            // Cập nhật buttons
+            if (type === 'success' && downloadPath) {
+                buttonsEl.innerHTML = `
+                    <a href="${downloadPath}" class="download-btn" download>📥 Tải File</a>
+                    <button class="popup-btn" onclick="closePopup()">Đóng</button>
+                `;
+            } else {
+                buttonsEl.innerHTML = '<button class="popup-btn" onclick="closePopup()">Đóng</button>';
+            }
+            
+            // Hiển thị popup
+            overlay.classList.add('show');
+        }
+        
+        // Đóng popup
+        function closePopup() {
+            document.getElementById('popupOverlay').classList.remove('show');
+        }
+        
+        // Đóng popup khi click bên ngoài
+        document.getElementById('popupOverlay').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closePopup();
+            }
+        });
+
+        // Xử lý response từ server
+        document.querySelector('.encrypt-btn').addEventListener('click', function(e) {
+            const inputFile = document.getElementById('input_file').files[0];
+            if (inputFile) {
+                const outputPath = document.getElementById('output_file_path').value;
+                if (!outputPath) {
+                    // Đề xuất thư mục output mặc định
+                    document.getElementById('output_file_path').value = 'output';
+                }
+            }
+        });
+
+        document.querySelector('.decrypt-btn').addEventListener('click', function(e) {
+            const inputFile = document.getElementById('input_file').files[0];
+            if (inputFile) {
+                const outputPath = document.getElementById('output_file_path').value;
+                if (!outputPath) {
+                    // Đề xuất thư mục output mặc định
+                    document.getElementById('output_file_path').value = 'output';
+                }
+            }
+        });
+    </script>
+</body>
+</html>
